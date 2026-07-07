@@ -4,3 +4,6 @@ dist/
 *.log
 mobile.png
 mobile-final.png
+.workbuddy/
+outputs/
+work/

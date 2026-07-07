@@ -165,7 +165,7 @@ export const days = [
     route: ['Pike', 'SEA', 'YVR', 'HKG'],
     timeline: [['上午', '自由安排', '咖啡与补买', '不去远郊'], ['中午', '12:30', '市区午餐', '整理行李'], ['下午', '建议提前', '前往 SEA', '国际转机预留充足时间'], ['晚上', '19:20', 'AC8809 起飞', 'SEA → YVR → HKG']],
     decisions: { recommended: '上午轻松活动，下午提前去机场', backup: '天气差时在酒店附近活动', avoid: '不安排远郊或耗时景点' },
-    alerts: ['AC8809 已锁定', 'YVR 接续航班细节待补充'], attractions: []
+    alerts: ['AC8809 已锁定（SEA → YVR → HKG 同一张票）', 'YVR 为过境转机，无需单独预订接续航班'], attractions: []
   }
 ]
 

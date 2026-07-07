@@ -120,7 +120,7 @@ function DecisionCards({ decisions }) {
   return <div className="decision-grid"><article className="decision recommended"><span>推荐方案</span><CheckCircle2 size={21} /><p>{decisions.recommended}</p></article><article className="decision backup"><span>备选方案</span><Route size={21} /><p>{decisions.backup}</p></article><article className="decision avoid"><span>不建议</span><X size={21} /><p>{decisions.avoid}</p></article></div>
 }
 
-function DayDetails({ day, checked, onToggle }) {
+function DayDetails({ day }) {
   const [mapOpen, setMapOpen] = useState(true)
   return (
     <article className="day-detail" id={`day-${day.day}`}>
@@ -135,7 +135,7 @@ function DayDetails({ day, checked, onToggle }) {
         <button onClick={() => setMapOpen(!mapOpen)}><Map size={18} /> {mapOpen ? '收起地图' : '打开地图'}</button>
       </div>
 
-      {mapOpen && <div className="daily-map"><TravelMap route={day.route} compact /><div className="daily-map-note"><Navigation size={16} /><span>路线为路书示意，实际导航请结合实时道路开放状态。</span><a href={`https://www.google.com/maps/search/?api=1&query=${day.weather.lat},${day.weather.lon}`} target="_blank" rel="noreferrer">外部地图 <ExternalLink size={14} /></a></div></div>}
+      {mapOpen && <div className="daily-map"><TravelMap route={day.route} compact /><div className="daily-map-note"><Navigation size={16} /><span>路线为路书示意，实际导航请结合实时道路开放状态。</span><a href={`https://www.google.com/maps/search/?api=1&query=${day.weather.lat},${day.weather.lon}`} target="_blank" rel="noopener noreferrer">外部地图 <ExternalLink size={14} /></a></div></div>}
 
       <div className="day-main-grid">
         <div className="day-content">
@@ -163,7 +163,7 @@ function App() {
   const currentDay = days.find((d) => d.day === selectedDay) || days[0]
   const completed = useMemo(() => Object.values(checked).filter(Boolean).length, [checked])
 
-  useEffect(() => { localStorage.setItem('rockies-checklist', JSON.stringify(checked)) }, [checked])
+  useEffect(() => { try { localStorage.setItem('rockies-checklist', JSON.stringify(checked)) } catch { /* 隐私模式或存储不可用时静默忽略 */ } }, [checked])
   const toggleCheck = (id) => setChecked((prev) => ({ ...prev, [id]: !prev[id] }))
   const selectDay = (day) => {
     setAllDays(false)
@@ -195,7 +195,7 @@ function App() {
           <div className="section-shell section-heading itinerary-heading"><div><span className="eyebrow">Day by day</span><h2>11日行程执行手册</h2></div><p>选择日期查看当日路线、天气、时间轴和备选方案。</p></div>
           <div className="day-tabs-wrap"><div className="day-tabs section-shell" role="tablist" aria-label="选择行程日期">{days.map((day) => <button role="tab" aria-selected={selectedDay === day.day} className={selectedDay === day.day ? 'active' : ''} key={day.day} onClick={() => selectDay(day.day)}><span>D{day.day}</span><strong>{day.date}</strong><small>{day.short}</small></button>)}</div></div>
           <div className="section-shell day-display">
-            {!allDays ? <DayDetails day={currentDay} checked={checked} onToggle={toggleCheck} /> : days.map((day) => <DayDetails day={day} checked={checked} onToggle={toggleCheck} key={day.day} />)}
+            {!allDays ? <DayDetails day={currentDay} /> : days.map((day) => <DayDetails day={day} key={day.day} />)}
             <button className="all-days-button" onClick={() => setAllDays(!allDays)}>{allDays ? '只看当前日期' : '展开全部 11 天'} {allDays ? <ChevronUp size={18} /> : <ChevronDown size={18} />}</button>
           </div>
         </section>
@@ -214,7 +214,7 @@ function App() {
           ['城市段无车', '温哥华与西雅图停车成本高，公共交通、步行与网约车更合适。'],
         ].map(([title, text], i) => <article key={title}><span>0{i + 1}</span><ShieldAlert size={21} /><h3>{title}</h3><p>{text}</p></article>)}</div></div></section>
       </main>
-      <footer><div className="section-shell"><div className="brand footer-brand"><span>R</span><div><strong>ROCKIES 2026</strong><small>TRAVEL FIELD GUIDE</small></div></div><p>地图 © OpenFreeMap · OpenMapTiles · OpenStreetMap contributors<br />天气数据由 Open-Meteo 提供 · 景点图片来自 Wikimedia Commons</p><p>最后更新：2026年7月7日<br />实际出行请以航司、公园及道路官方信息为准</p></div></footer>
+      <footer><div className="section-shell"><div className="brand footer-brand"><span>R</span><div><strong>ROCKIES 2026</strong><small>TRAVEL FIELD GUIDE</small></div></div><p>地图 © OpenFreeMap · OpenMapTiles · OpenStreetMap contributors<br />天气数据由 Open-Meteo 提供 · 景点图片来自 Wikimedia Commons</p><p>最后更新：2026年7月7日 · 在线版<br />实际出行请以航司、公园及道路官方信息为准</p></div></footer>
       <nav className="mobile-bottom" aria-label="移动端快捷导航"><button onClick={() => scrollToId('itinerary')}><CalendarDays /><span>今日</span></button><button onClick={() => scrollToId('route-map')}><Map /><span>地图</span></button><button onClick={() => scrollToId('tasks')}><ListChecks /><span>待办</span></button><button onClick={() => scrollToId('risks')}><ShieldAlert /><span>风险</span></button></nav>
     </div>
   )
